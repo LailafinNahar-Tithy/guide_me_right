@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+
+{% block link %}
+<style>
+    .message {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 8px;
+    }
+
+    .message.sent {
+        background-color: #007bff;
+        color: #fff;
+        text-align: right;
+    }
+
+    .message.received {
+        background-color: #FEFEFE;
+        color: #000;
+    }
+</style>
+
+{% endblock link %}
+
+
+
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Search Bar -->
+    <div class="input-group mb-3" style="width: 50%;">
+        <input type="text" class="form-control rouneded-pill-left" placeholder="where are you going?" aria-label="Search"
+            aria-describedby="basic-addon2" style="width: 70%;">
+        <div class="input-group-append">
+            <button class="btn text-light" style="background-color: #3D8ED9;" type="button">Search</button>
+        </div>
+    </div>  
+    
+    <div class="text-center p-3">
+        <h3>Write Preference For Hotels</h3>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-8 col-12">
+            <!-- Blog Card -->
+            <div class="row no-gutters" style="background-color: #0DAB832E;">
+                <div class="col-12 p-3 text-dark rouneded" style="background-color: #186BCB29;">
+                    <h5 class="card-title border-bottom border-dark">Selected</h5>
+                    <ul id="selectedItemsList">
+                    </ul>
+                        <button class="rounded-pill btn btn-dark btn-sm" id="next-button" onclick="redirectTo()">Next</button>
+                </div>
+            </div>
+            <div id="chat-suggestions"></div>
+        </div>
+        <div class="col-md-4 col-12">
+            <!-- Chat Box -->
+            <div class="card">
+                <div class="card-header text-white" style="background-color: #0DAB83;">
+                    Chat Box
+                </div>
+                <div class="card-body" style="height: 450px; overflow-y: auto; background-color: #D9D9D9;" id="chat-messages">
+                </div>
+                <div class="input-group rounded-lg">
+
+                    <input type="text" class="form-control" placeholder="Type your message..." id="user-input" style="padding: 25px;" onkeydown="if (event.keyCode === 13) sendMessage()">
+                  
+                    <div class="input-group-append p-3">
+                  
+                      <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89.471-1.178-1.178.471L5.93 9.363l.338.215a.5.5 0 0 1 .154.154l.215.338 7.494-7.494Z"/>
+                        </svg>
+                      </span>
+                  
+                    </div>
+                  
+                  </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+
+    localStorage.removeItem('selectedHotels')
+
+    function getSelectedItem() {
+        var selectedItems = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+
+        var listElement = document.getElementById('selectedItemsList');
+
+        listElement.innerHTML = '';
+
+        selectedItems.forEach(function(item) {
+            var listItem = document.createElement('li');
+            listItem.textContent = item;
+            listElement.appendChild(listItem);
+        });
+    }
+
+    getSelectedItem()
+
+    var selectedPlaces = new Set();
+
+    var selectedHotels = new Set();
+
+    function getSelectedPlacesFromLocalStorage() {
+        var storedData = localStorage.getItem('selectedPlaces');
+        if (storedData) {
+            selectedPlaces = new Set(JSON.parse(storedData));
+        }
+    }
+
+    // function saveSelectedPlacesToLocalStorage() {
+    //     localStorage.setItem('selectedHotels', JSON.stringify(Array.from(selectedHotels)));
+    // }
+
+    getSelectedPlacesFromLocalStorage();
+
+    function sendMessage() {
+        var userInput = document.getElementById("user-input").value;
+        if (userInput.trim() !== "") {
+            $.ajax({
+                url: "/hotels_preference_chatbox",
+                method: "POST",
+                data: { userInput: userInput, selectedPlaces: Array.from(selectedPlaces) },
+                success: function (response) {
+
+                    if (response.suggestions2) {
+                        console.log(response.suggestions2)
+                        // Remove the old data
+                        localStorage.removeItem('selectedHotels');
+                        
+                        // Add the new data
+                        localStorage.setItem('selectedHotels', JSON.stringify(response.suggestions2));
+                        
+
+                        var chatSuggestions = document.getElementById("chat-suggestions");
+                        chatSuggestions.innerHTML = "";
+
+                        var chatMessages = document.getElementById("chat-messages");
+                        // chatMessages.innerHTML = "";
+
+                        var userMessage = document.createElement("div");
+                        userMessage.className = "message sent ml-5";
+                        userMessage.innerHTML = "<strong></strong> " + userInput;
+                        chatMessages.appendChild(userMessage);
+
+                        var chatSuggestions = document.getElementById("chat-suggestions");
+
+                        if (response.suggestions2 && response.suggestions2.length > 0) {
+                            response.suggestions2.forEach(function (suggestion) {
+                                var placeName = suggestion['place_name'];
+
+                                if (placeName) {
+                                    var card = document.createElement("div");
+                                    card.className = "card mt-2";
+                                    // card.setAttribute("onclick", "addSelectedPlace('" + suggestion['Hotel Name'] + "')");
+
+                                    var cardImage = document.createElement("img");
+                                    cardImage.className = "card-img-left img-fluid h-25";
+                                    cardImage.src = "{% static './photos/fater_chor.png' %}";
+                                    card.appendChild(cardImage);
+
+                                    var cardBody = document.createElement("div");
+                                    cardBody.className = "card-body";
+
+                                    cardBody.innerHTML = "<h5 class='card-title'>" + suggestion.tags["name"] + "</h5>" +
+                                        "<p class='card-text'>" +
+                                        "Type: " + suggestion.tags["tourism"] + "<br>" +
+                                        "</p>";
+
+                                    card.appendChild(cardBody);
+                                    chatSuggestions.appendChild(card);
+                                }
+                            });
+                        }
+
+                        document.getElementById("user-input").value = "";
+
+                    }else{
+                        // Remove the old data
+                        localStorage.removeItem('selectedHotels');
+                        
+                        // Add the new data
+                        localStorage.setItem('selectedHotels', JSON.stringify(response.suggestions));
+                        
+
+                        var chatSuggestions = document.getElementById("chat-suggestions");
+                        chatSuggestions.innerHTML = "";
+
+                        var chatMessages = document.getElementById("chat-messages");
+                        // chatMessages.innerHTML = "";
+
+                        var userMessage = document.createElement("div");
+                        userMessage.className = "message sent ml-5";
+                        userMessage.innerHTML = "<strong></strong> " + userInput;
+                        chatMessages.appendChild(userMessage);
+
+                        var chatSuggestions = document.getElementById("chat-suggestions");
+
+                        if (response.suggestions && response.suggestions.length > 0) {
+                            response.suggestions.forEach(function (suggestion) {
+                                var placeName = suggestion['Place Name'];
+
+                                if (!selectedPlaces.has(placeName)) {
+                                    var card = document.createElement("div");
+                                    card.className = "card mt-2";
+                                    // card.setAttribute("onclick", "addSelectedPlace('" + suggestion['Hotel Name'] + "')");
+
+                                    var cardImage = document.createElement("img");
+                                    cardImage.className = "card-img-left img-fluid h-25";
+                                    cardImage.src = "{% static './photos/acm.jpg' %}";
+                                    card.appendChild(cardImage);
+
+                                    var cardBody = document.createElement("div");
+                                    cardBody.className = "card-body";
+
+                                    cardBody.innerHTML = "<h5 class='card-title'>" + suggestion['Hotel Name'] + "</h5>" +
+                                        "<p class='card-text'>" +
+                                        "Address: " + suggestion['Address'] + "<br>" +
+                                        "Phone Number: " + suggestion['Phone Number'] + "<br>" +
+                                        "Description: " + suggestion['Description'] + "<br>" +
+                                        "Facilities: " + suggestion['Facilities'] + "<br>" +
+                                        "Price Range (USD): " + suggestion['Min Price (USD)'] + '-' + suggestion['Max Price (USD)'] +
+                                        "</p>";
+
+                                    card.appendChild(cardBody);
+                                    chatSuggestions.appendChild(card);
+                                }
+                            });
+                        }
+
+                        document.getElementById("user-input").value = "";
+
+                        // saveSelectedPlacesToLocalStorage();
+
+                        toggleNextButtonVisibility();
+                    }
+
+                }
+            });
+        }
+    }
+
+    // function addSelectedPlace(placeName) {
+    //     selectedHotels.add(placeName);
+    //     saveSelectedPlacesToLocalStorage();
+    // }
+
+    function toggleNextButtonVisibility() {
+        var nextButton = document.querySelector(".col-4.p-3.text-dark.rouneded button");
+        nextButton.style.display = selectedPlaces.size > 0 ? "block" : "none";
+    }
+
+    function redirectTo(){
+        var placeNames = JSON.parse(localStorage.getItem('selectedPlaces')) || []
+
+        var subPlaceName = placeNames[placeNames.length - 1]
+
+
+        var encodedPlaceNames = placeNames.map(function(place) {
+            return encodeURIComponent(place);
+        }).join(',');
+
+        var redirectUrl = "/hotels?placeNames=" + encodedPlaceNames;
+
+        window.location.href = redirectUrl;
+    }
+
+</script>
+{% endblock script %}
+
+

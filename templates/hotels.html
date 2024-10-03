@@ -1,0 +1,475 @@
+{% extends "base.html" %}
+
+{% load custom_filters %}
+{% load static %}
+
+
+
+{% block link %}
+<link rel="stylesheet" href="{%static './css/hotels.css'%}">
+{% endblock link %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="heading">
+        <h2 class="mt-5">Hotels in <span id="hotel_location"></span></h2>
+    </div>
+</div>
+
+
+<div class="container-fluid mb-5">
+    <div class="row mt-5">
+        <div class="col-lg-2 col-md-2">
+            <!-- <div class="left-comlumn p-4 shadow border rounded">
+                <p class="">Star Rating</p>
+                <form action="/" class="">
+                    <input type="checkbox" id="#" name="5 star" value="5 star">
+                    <label for="5 star">5 Stars</label> <br>
+                    <input type="checkbox" id="#" name="4 star" value="4 star">
+                    <label for="4 star">4 Stars</label> <br>
+                    <input type="checkbox" id="#" name="3 star" value="3 star">
+                    <label for="3 star">3 Stars</label><br>
+                    <input type="checkbox" id="#" name="2 star" value="2 star">
+                    <label for="2 star">2 Stars</label><br>
+                    <input type="checkbox" id="#" name="1 star" value="1 star">
+                    <label for="1 star">1 Stars</label><br>
+                </form>
+                <p class="mt-3">Review Score</p>
+                <form action="/" class="">
+                    <input type="checkbox" id="#" name="Exceptional 9+" value="Exceptional 9+">
+                    <label for="Exceptional 9+">Exceptional 9+</label> <br>
+                    <input type="checkbox" id="#" name="Very Good 8+" value="Very Good 8+">
+                    <label for="Very Good 8+">Very Good 8+</label> <br>
+                    <input type="checkbox" id="#" name="Good 7+" value="Good 7+">
+                    <label for="Good 7+">Good 7+</label> <br>
+                    <input type="checkbox" id="#" name="Pleasant 6+" value="Pleasant 6+">
+                    <label for="Pleasant 6+">Pleasant 6+</label> <br>
+                </form>
+            </div> -->
+        </div>
+        <div class="col-lg-7 col-md-7 ">
+            <div class="container">
+
+                <div id="hotelsContainer"></div>
+
+                <!-- {% for hotel in hotels %}
+                <div class="row mb-4 shadow border rounded p-3 placeCard" onclick="addSelectedPlace('{{ hotel.tags.name }}')">
+                    <div class="col-md-4">
+                        <div class="image-top">
+                            <img src="{%static './photos/4.jpg'%}" class="h-auto w-100 rounded" alt="main img">
+                        </div>
+                        <div class="row">
+                            <div class="col-4 mt-2">
+                                <img src="{%static './photos/4.jpg'%}" class="img-fluid rounded" alt="img-1">
+                            </div>
+                            <div class="col-4 mt-2">
+                                <img src="{%static './photos/4.jpg'%}" class="img-fluid rounded" alt="img-1">
+                            </div>
+                            <div class="col-4 mt-2">
+                                <img src="{%static './photos/4.jpg'%}" class="img-fluid rounded" alt="img-1">
+                            </div>
+                            <div class="col-4 mt-2">
+                                <img src="{%static './photos/4.jpg'%}" class="img-fluid rounded" alt="img-1">
+                            </div>
+                            <div class="col-4 mt-2">
+                                <img src="{%static './photos/4.jpg'%}" class="img-fluid rounded" alt="img-1">
+                            </div>
+                            <div class="col-4 mt-2">
+                                <img src="{%static './photos/4.jpg'%}" class="img-fluid rounded" alt="img-1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="middle-top">
+                            <h4 class="font-weight-bold">{{ hotel.tags.name }}</h4>
+                        </div>
+                        <div class="row no-gutters">
+                            <div class="col-md-3">
+                                <div class="rating">
+                                    <i class="fa-regular fa-star rating-icon"></i>
+                                    <i class="fa-regular fa-star rating-icon"></i>
+                                    <i class="fa-regular fa-star rating-icon"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>{{ hotel.location }} -</span>
+                                <span><a href="#">View on map</a></span>
+                            </div>
+                        </div>
+
+
+                        <div class="space mt-2">
+                            <p>Car Park</p>
+                            <p>Free Wifi In All Rooms</p>
+                            <p>+6</p>
+                        </div>
+                        <p class="middle-text mt-3 h6">"All Over Very Good Service"</p>
+                        <p class="middle-text-last mt-3 text-center">Distance cover for you sight  {{hotel.distance}}km</p>
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <div class="row no-gutters">
+                            <div class="col-12">
+                                <h6>{{ hotel.tags.tourism|upper }}</h6>
+                                <p>{{hotel.random_number}} Reviews</p>
+                            </div>
+                        </div>
+                        <div class="">
+                            <i class="fa-regular fa-3x fa-circle-check"></i>
+                        </div>
+                        <div class="right-content-bottom mt-2">
+                            <h5 class="font-weight-bold">Average Per Night</h5>
+                            <h5 class="font-weight-bold">1500 Tk.</h5>
+                            <button class="btn btn-primary rounded text-light px-2">Check Abailability</button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %} -->
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="container">
+                <div class="col-lg-12 p-3 col-md-12 rounded border slecting-card" style="background-color: #186BCB29; display: flex; flex-direction: column; align-items: center;">
+                    <h3 class="border-bottom border-dark">Selected</h3>
+                    <ul id="selectedItemsList">
+                    </ul>
+                    <button class="btn btn-success rounded-pill" onclick="submitSelectedPlaces()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+
+    var selectedPlaces = new Set();
+
+    function getSelectedItems() {
+        var selectedItems = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+
+        var listElement = document.getElementById('selectedItemsList');
+
+        listElement.innerHTML = '';
+
+        selectedItems.forEach(function(item) {
+            var listItem = document.createElement('li');
+            listItem.textContent = item;
+            listElement.appendChild(listItem);
+        });
+    }
+
+    getSelectedItems()
+
+    getSelectedPlacesFromLocalStorage();
+
+
+    function getSelectedPlacesFromLocalStorage() {
+        var storedData = localStorage.getItem('selectedPlaces');
+        if (storedData) {
+            selectedPlaces = new Set(JSON.parse(storedData));
+        }
+    }
+
+    function saveSelectedPlacesToLocalStorage() {
+        localStorage.setItem('selectedPlaces', JSON.stringify(Array.from(selectedPlaces)));
+    }
+
+
+
+
+    function addSelectedPlace(placeName) {
+        var selectedCard = document.querySelector(".slecting-card");
+        var selectedList = selectedCard.querySelector("ul");
+
+        if (!selectedPlaces.has(placeName)) {
+            var listItem = document.createElement("li");
+            listItem.textContent = placeName;
+            selectedList.appendChild(listItem);
+
+            selectedPlaces.add(placeName);
+
+            saveSelectedPlacesToLocalStorage();
+
+        }
+    }
+
+
+
+
+
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+        // Radius of the Earth in kilometers
+        var R = 6371;
+
+        // Convert latitude and longitude from degrees to radians
+        var dLat = (lat2 - lat1) * (Math.PI / 180);
+        var dLon = (lon2 - lon1) * (Math.PI / 180);
+
+        // Calculate Haversine distance
+        var a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var distance = R * c;
+        return distance;
+    }
+
+
+
+
+    function addHotelToContainer(hotel) {
+        // Create a new div element for each hotel
+        var hotelDiv = document.createElement('div');
+        hotelDiv.className = 'row mb-4 shadow border rounded p-3 placeCard';
+
+        var lat = {{lat}}
+        var lon = {{lon}}
+
+        if(hotel.latitude && hotel.longitude){
+            // Calculate distance
+            var distance = haversineDistance(hotel.latitude, hotel.longitude, lat, lon);
+            distance = distance.toFixed(2);
+
+
+            // Add hotel and distance to an array
+            var hotelWithDistance = { hotel: hotel, distance: distance };
+
+
+            // Construct the HTML content for the hotel
+            hotelDiv.innerHTML = `
+            <div class="col-md-4">
+                <!-- Add your hotel image and gallery here -->
+                <div class="image-top">
+                    <!-- Add your hotel image here -->
+                    <img src="{%static './photos/acm.jpg'%}" class="h-auto w-100 rounded" alt="main img">
+                </div>
+                <!-- Add other gallery images here -->
+                <div class="row">
+                    <!-- Add other gallery images here -->
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <!-- Add hotel name, rating, location, and other details here -->
+                <div class="middle-top">
+                    <h4 class="font-weight-bold">${hotel.tags['name']}</h4>
+                </div>
+                <!-- Add rating and location details here -->
+                <div class="row no-gutters">
+                    <div class="col-md-12">
+                        <!-- Add hotel location and map link here -->
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>${hotel.location} -</span>
+                        <span><a href="#">View on map</a></span>
+                    </div>
+                </div>
+                <!-- Add space details, review, and distance here -->
+                <div class="space mt-2">
+                    ${hotel.Facilities}
+                </div>
+                <!-- Add hotel review and distance details here -->
+                <p class="middle-text mt-3 h6">"${hotel.Description}"</p>
+                    <p class="middle-text-last mt-3 text-center">
+                        Distance cover for you sight ${distance} km
+                    </p>
+            </div>
+            <div class="col-md-3 text-right">
+                <!-- Add hotel category, reviews, and check availability button here -->
+                <div class="row no-gutters">
+                    <div class="col-12">
+                        <h6>HOTEL</h6>
+                        <p>${hotel.random} Reviews</p>
+                    </div>
+                </div>
+                <!-- Add average per night and check availability button here -->
+                <div class="right-content-bottom mt-2">
+                    <h5 class="font-weight-bold">Average Per Night</h5>
+                    <h5 class="font-weight-bold">${hotel['Min Price (USD)']} - ${hotel['Max Price (USD)']} USD.</h5>
+                </div>
+            </div>
+            `;
+
+
+        }else{
+            // Calculate distance
+            var distance = haversineDistance(hotel.Latitude, hotel.Longitude, lat, lon);
+            distance = distance.toFixed(2);
+
+
+            // Add hotel and distance to an array
+            var hotelWithDistance = { hotel: hotel, distance: distance };
+
+
+            // Construct the HTML content for the hotel
+            hotelDiv.innerHTML = `
+            <div class="col-md-4">
+                <!-- Add your hotel image and gallery here -->
+                <div class="image-top">
+                    <!-- Add your hotel image here -->
+                    <img src="{%static './photos/acm.jpg'%}" class="h-auto w-100 rounded" alt="main img">
+                </div>
+                <!-- Add other gallery images here -->
+                <div class="row">
+                    <!-- Add other gallery images here -->
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                    <div class="col-4 mt-2"><img src="{%static './photos/acm.jpg'%}" class="img-fluid rounded" alt="img"></div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <!-- Add hotel name, rating, location, and other details here -->
+                <div class="middle-top">
+                    <h4 class="font-weight-bold">${hotel['Hotel Name']}</h4>
+                </div>
+                <!-- Add rating and location details here -->
+                <div class="row no-gutters">
+                    <div class="col-md-12">
+                        <!-- Add hotel location and map link here -->
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>${hotel.Address} -</span>
+                        <span><a href="#">View on map</a></span>
+                    </div>
+                </div>
+                <!-- Add space details, review, and distance here -->
+                <div class="space mt-2">
+                    ${hotel.Facilities}
+                </div>
+                <!-- Add hotel review and distance details here -->
+                <p class="middle-text mt-3 h6">"${hotel.Description}"</p>
+                    <p class="middle-text-last mt-3 text-center">
+                        Distance cover for you sight ${distance} km
+                    </p>
+            </div>
+            <div class="col-md-3 text-right">
+                <!-- Add hotel category, reviews, and check availability button here -->
+                <div class="row no-gutters">
+                    <div class="col-12">
+                        <h6>HOTEL</h6>
+                        <p>${hotel.random} Reviews</p>
+                    </div>
+                </div>
+                <!-- Add average per night and check availability button here -->
+                <div class="right-content-bottom mt-2">
+                    <h5 class="font-weight-bold">Average Per Night</h5>
+                    <h5 class="font-weight-bold">${hotel['Min Price (USD)']} - ${hotel['Max Price (USD)']} USD.</h5>
+                </div>
+            </div>
+            `;
+
+        }
+
+        // document.getElementById('hotelsContainer').appendChild(hotelDiv);
+        document.getElementById('hotelsContainer').appendChild(hotelDiv);
+
+        return hotelWithDistance;
+    }
+
+    var hotelsInformation = JSON.parse(localStorage.getItem('selectedHotels'));
+    var hotelLocationElement = document.getElementById('hotel_location');
+
+    if (hotelsInformation && hotelLocationElement) {
+        hotelLocationElement.textContent = hotelsInformation[0].location;
+    }
+
+
+    if(hotelsInformation[0].Address){
+        hotelLocationElement.textContent = hotelsInformation[0].Address;
+    }
+
+
+
+    // Check if hotelsInformation is not null or undefined
+    if (hotelsInformation) {
+        // Sort hotels based on distance
+        var sortedHotels = hotelsInformation.map(function (hotel) {
+            return addHotelToContainer(hotel);
+        }).sort(function (a, b) {
+            return a.distance - b.distance;
+        });
+
+        // Clear existing content
+        var hotelsContainer = document.getElementById('hotelsContainer');
+        hotelsContainer.innerHTML = '';
+
+        // Loop through each sorted hotel and add it to the container
+        sortedHotels.forEach(function (hotelWithDistance) {
+            addHotelToContainer(hotelWithDistance.hotel);
+        });
+    }
+
+    function submitSelectedPlaces() {
+        var selectedPlacesArray = Array.from(selectedPlaces);
+        var selectedPlacesString = JSON.stringify(selectedPlacesArray);
+
+        var lat = {{lat}}
+        var lon = {{lon}}
+
+        var hotelsDataArray = hotelsInformation.map(function(hotel) {
+            if(hotel.latitude && hotel.longitude){
+                var distance = haversineDistance(hotel.latitude, hotel.longitude, lat, lon);
+                distance = distance.toFixed(2);
+            }else{
+                var distance = haversineDistance(hotel.Latitude, hotel.Longitude, lat, lon);
+                distance = distance.toFixed(2);
+            }
+            return {
+                name: hotel['Hotel Name'],
+                location: hotel['Address'],
+                distance: distance,
+            };
+        });
+        var hotelsDataString = JSON.stringify(hotelsDataArray);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "submit_places" %}',
+            data: {
+                'selected_places': selectedPlacesString,
+                'hotels_data': hotelsDataString,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                console.log(response)
+                var byteCharacters = atob(response.pdf_content);
+                var byteNumbers = new Array(byteCharacters.length);
+                for (var i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                var byteArray = new Uint8Array(byteNumbers);
+                var blob = new Blob([byteArray], { type: 'application/pdf' });
+
+                // Create a download link and trigger the download
+                var downloadLink = document.createElement('a');
+                downloadLink.href = window.URL.createObjectURL(blob);
+                downloadLink.download = 'selected_places.pdf';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                console.log('Places submitted successfully', response);
+            },
+            error: function(error) {
+                console.error('Error submitting places:', error);
+            }
+        });
+    }
+
+
+
+
+
+</script>
+{% endblock script %}
+
+{% endblock content %}
